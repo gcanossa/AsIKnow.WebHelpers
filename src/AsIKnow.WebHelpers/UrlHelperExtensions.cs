@@ -12,10 +12,12 @@ namespace AsIKnow.WebHelpers
         /// Adjust the given uri with respect to the originating request.
         /// </summary>
         /// <param name="urlHelper"></param>
-        /// <param name="ext"></param>
+        /// <param name="uri"></param>
         /// <returns></returns>
-        public static Uri AdjustUri(this IUrlHelper urlHelper, Uri ext)
+        public static Uri AdjustUri(this IUrlHelper urlHelper, Uri uri)
         {
+            uri = uri ?? throw new ArgumentException(nameof(uri));
+
             HttpRequest req = urlHelper.ActionContext.HttpContext.Request;
             string scheme = req.Headers.Any(p => p.Key.ToLower() == "x-forwarded-proto") ?
                 req.Headers.First(p => p.Key.ToLower() == "x-forwarded-proto").Value[0]
@@ -30,7 +32,7 @@ namespace AsIKnow.WebHelpers
                 :
                 req.HttpContext.Connection.LocalPort;
 
-            UriBuilder ub = new UriBuilder(ext)
+            UriBuilder ub = new UriBuilder(uri)
             {
                 Scheme = scheme,
                 Host = host,
@@ -44,32 +46,32 @@ namespace AsIKnow.WebHelpers
         /// Adjust the given object uri with respect to the originating request.
         /// </summary>
         /// <param name="urlHelper"></param>
-        /// <param name="ext"></param>
+        /// <param name="uri"></param>
         /// <returns></returns>
-        public static string AdjustStringUri(this IUrlHelper urlHelper, string ext)
+        public static string AdjustStringUri(this IUrlHelper urlHelper, string uri)
         {
-            return urlHelper.AdjustUri(new Uri(ext)).ToString();
+            return urlHelper.AdjustUri(new Uri(uri)).ToString();
         }
 
         /// <summary>
-        /// Adjust the give uri properties with respect to the originating request.
+        /// Adjust the given uri properties with respect to the originating request, modifying the object.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="urlHelper"></param>
-        /// <param name="ext"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        public static T AdjustObjectUriProperties<T>(this IUrlHelper urlHelper, T ext) where T : new()
+        public static T AdjustObjectUriProperties<T>(this IUrlHelper urlHelper, T obj) where T : class
         {
-            T result = (T)Activator.CreateInstance(ext.GetType());
-            foreach (PropertyInfo pinfo in ext.GetType().GetProperties().Where(p => p.CanWrite))
+            if(obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            
+            foreach (PropertyInfo pinfo in obj.GetType().GetProperties().Where(p => p.CanWrite))
             {
                 if (pinfo.PropertyType == typeof(Uri))
-                    pinfo.SetValue(result, urlHelper.AdjustUri((Uri)pinfo.GetValue(ext)));
-                else
-                    pinfo.SetValue(result, pinfo.GetValue(ext));
+                    pinfo.SetValue(obj, urlHelper.AdjustUri((Uri)pinfo.GetValue(obj)));
             }
 
-            return result;
+            return obj;
         }
     }
 }

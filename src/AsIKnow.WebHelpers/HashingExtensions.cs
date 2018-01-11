@@ -36,9 +36,9 @@ namespace AsIKnow.WebHelpers
         public static byte[] FromHexString(this string ext)
         {
             if (ext.Length % 2 != 0)
-                throw new ArgumentException($"Not a valid hexadecimal string. Wrong length.", "ext");
+                throw new ArgumentException($"Not a valid hexadecimal string. Wrong length.", nameof(ext));
             if (Regex.IsMatch(ext, "[^0-9a-fA-F]"))
-                throw new ArgumentException($"Not a valid hexadecimal string. Unexpeted characters.", "ext");
+                throw new ArgumentException($"Not a valid hexadecimal string. Unexpeted characters.", nameof(ext));
 
             int NumberChars = ext.Length;
             byte[] bytes = new byte[NumberChars / 2];

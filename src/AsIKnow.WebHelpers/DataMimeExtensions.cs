@@ -98,12 +98,21 @@ namespace AsIKnow.WebHelpers
                 return "application/octet-stream";
         }
 
-        public static bool IsBase64(this string ext)
+        public static bool IsImage(this byte[] ext)
         {
-            if (ext == null)
-                throw new ArgumentNullException(nameof(ext));
-
-            return ext.Length % 3 == 0 && !Regex.IsMatch(ext.Replace('-','+').Replace('_','/'), "[^a-zA-Z0-9\\+\\/=]") && (!ext.Contains('=') || ext.EndsWith('='));
+            return ext.GetMimeType().StartsWith("image/");
+        }
+        public static bool IsVideo(this byte[] ext)
+        {
+            return ext.GetMimeType().StartsWith("video/");
+        }
+        public static bool IsPdf(this byte[] ext)
+        {
+            return ext.GetMimeType() == "application/pdf";
+        }
+        public static bool IsUnknown(this byte[] ext)
+        {
+            return ext.GetMimeType() == "application/octet-stream";
         }
     }
 }
