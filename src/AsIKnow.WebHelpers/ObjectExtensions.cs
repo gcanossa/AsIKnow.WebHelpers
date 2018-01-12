@@ -102,5 +102,24 @@ namespace AsIKnow.WebHelpers
 
             typeof(T).GetProperty(name).SetValue(ext, value);
         }
+        public static T CopyProperties<T>(this T ext, object from, Action<T> specialMappings = null)
+        {
+            if (ext == null)
+                throw new ArgumentNullException(nameof(ext));
+            from = from ?? throw new ArgumentNullException(nameof(from));
+
+            Type toType = typeof(T);
+
+            foreach (PropertyInfo finfo in from.GetType().GetProperties())
+            {
+                PropertyInfo pinfo = toType.GetProperty(finfo.Name);
+                if (pinfo != null)
+                    pinfo.SetValue(ext, finfo.GetValue(from));
+            }
+
+            specialMappings?.Invoke(ext);
+
+            return ext;
+        }
     }
 }
