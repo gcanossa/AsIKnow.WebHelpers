@@ -96,6 +96,11 @@ namespace UnitTest
             Assert.Equal(4, test.CopyProperties(new { Value = 4 }, p=> p.ValueString = "ciao").Value);
             Assert.Equal(4, test.Value);
             Assert.Equal("ciao", test.ValueString);
+
+            Test1 test1 = new Test1();
+            test1.CopyProperties(test.ExludeProperties(p=>p.Value));
+            Assert.Equal(0, test1.Value);
+            Assert.Equal("ciao", test1.ValueString);
         }
     }
 }
