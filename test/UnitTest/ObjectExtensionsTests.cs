@@ -79,6 +79,9 @@ namespace UnitTest
             
             Assert.Equal(new string[] { "Test", "Tests" }, test.ExludeProperties<Test1, Test2>().Keys);
             Assert.Equal(new string[] { "Test", "Tests" }, test.ExludeProperties(new Test2().GetType()).Keys);
+
+            Assert.Equal(new string[] { "Test" }, test.ExludeProperties<Test1, Test2>(p=>p.Tests).Keys);
+            Assert.Equal(new Dictionary<string, object>() { { "Value", 1 }, { "ValueString", "test" }, { "Test", test.Test } }, test.SelectProperties<Test1, Test2>(p => p.Test));
         }
 
         [Trait("Category", "ObjectExtensions")]

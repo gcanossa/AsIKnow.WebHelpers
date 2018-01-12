@@ -48,21 +48,21 @@ namespace AsIKnow.WebHelpers
 
             return ext.ExludeProperties(selector.ToPropertyNameCollection());
         }
-        public static Dictionary<string, object> ExludeProperties<T, E>(this T ext)
+        public static Dictionary<string, object> ExludeProperties<T, E>(this T ext, Expression<Func<T, object>> additionalSelector = null)
         {
             if (ext == null)
                 throw new ArgumentNullException(nameof(ext));
 
-            return ext.ExludeProperties(typeof(E));
+            return ext.ExludeProperties(typeof(E), additionalSelector);
         }
-        public static Dictionary<string, object> ExludeProperties<T>(this T ext, Type selector)
+        public static Dictionary<string, object> ExludeProperties<T>(this T ext, Type selector, Expression<Func<T, object>> additionalSelector = null)
         {
             if (ext == null)
                 throw new ArgumentNullException(nameof(ext));
             if (selector == null)
                 throw new ArgumentNullException(nameof(selector));
 
-            return ext.ExludeProperties(selector.GetProperties().Select(p => p.Name));
+            return ext.ExludeProperties(selector.GetProperties().Select(p => p.Name).Union(additionalSelector?.ToPropertyNameCollection() ?? new string[0]));
         }
         public static Dictionary<string, object> ExludeProperties<T>(this T ext, IEnumerable<string> properties)
         {
@@ -89,21 +89,21 @@ namespace AsIKnow.WebHelpers
 
             return ext.SelectProperties(selector.ToPropertyNameCollection());
         }
-        public static Dictionary<string, object> SelectProperties<T, E>(this T ext)
+        public static Dictionary<string, object> SelectProperties<T, E>(this T ext, Expression<Func<T, object>> additionalSelector = null)
         {
             if (ext == null)
                 throw new ArgumentNullException(nameof(ext));
 
-            return ext.SelectProperties(typeof(E));
+            return ext.SelectProperties(typeof(E), additionalSelector);
         }
-        public static Dictionary<string, object> SelectProperties<T>(this T ext, Type selector)
+        public static Dictionary<string, object> SelectProperties<T>(this T ext, Type selector, Expression<Func<T, object>> additionalSelector = null)
         {
             if (ext == null)
                 throw new ArgumentNullException(nameof(ext));
             if (selector == null)
                 throw new ArgumentNullException(nameof(selector));
 
-            return ext.SelectProperties(selector.GetProperties().Select(p => p.Name));
+            return ext.SelectProperties(selector.GetProperties().Select(p => p.Name).Union(additionalSelector?.ToPropertyNameCollection()??new string[0]));
         }
         public static Dictionary<string, object> SelectProperties<T>(this T ext, IEnumerable<string> properties)
         {
