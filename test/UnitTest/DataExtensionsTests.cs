@@ -5,7 +5,7 @@ using Xunit;
 
 namespace UnitTest
 {
-    public class UnitTest1
+    public class DataExtensionsTests
     {
         [Trait("Category", "DataExtensions")]
         [Fact(DisplayName = "IsBase64")]
