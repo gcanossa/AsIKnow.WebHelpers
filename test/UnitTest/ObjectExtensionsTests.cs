@@ -47,8 +47,8 @@ namespace UnitTest
 
             Assert.True(test.HasPropery("Value"));
             Assert.False(test.HasPropery("Value1"));
-            Assert.True(test.HasPropery<Test1, int>("Value"));
-            Assert.False(test.HasPropery<Test1, string>("Value"));
+            Assert.True(test.HasPropery<int>("Value"));
+            Assert.False(test.HasPropery<string>("Value"));
         }
 
         [Trait("Category", "ObjectExtensions")]
@@ -60,7 +60,7 @@ namespace UnitTest
             Assert.True(test.GetPropValue<Test1, int>("Value") == 1);
             Assert.True((int)test.GetPropValue("Value") == 1);
 
-            test.SetPropValue<Test1, int>("Value", 2);
+            test.SetPropValue<int>("Value", 2);
             Assert.True(test.GetPropValue<Test1, int>("Value") == 2);
             Assert.True((int)test.GetPropValue("Value") == 2);
         }

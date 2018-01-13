@@ -132,9 +132,9 @@ namespace AsIKnow.WebHelpers
             PropertyInfo pinfo = baseType.GetProperty(name);
             return pinfo != null && propertyBaseType.IsAssignableFrom(pinfo.PropertyType);
         }
-        public static bool HasPropery<T, P>(this T ext, string name)
+        public static bool HasPropery<P>(this object ext, string name)
         {
-            return ext.HasPropery(name, typeof(T), typeof(P));
+            return ext.HasPropery(name, ext.GetType(), typeof(P));
         }
         public static object GetPropValue<T>(this T ext, string name)
         {
@@ -142,17 +142,17 @@ namespace AsIKnow.WebHelpers
         }
         public static P GetPropValue<T, P>(this T ext, string name)
         {
-            if (!ext.HasPropery<T, P>(name))
+            if (!ext.HasPropery<P>(name))
                 throw new ArgumentException("Property not found.", nameof(name));
 
-            return (P)typeof(T).GetProperty(name).GetValue(ext);
+            return (P)ext.GetType().GetProperty(name).GetValue(ext);
         }
-        public static void SetPropValue<T, P>(this T ext, string name, P value)
+        public static void SetPropValue<P>(this object ext, string name, P value)
         {
-            if (!ext.HasPropery<T, P>(name))
+            if (!ext.HasPropery<P>(name))
                 throw new ArgumentException("Property not found.", nameof(name));
 
-            typeof(T).GetProperty(name).SetValue(ext, value);
+            ext.GetType().GetProperty(name).SetValue(ext, value);
         }
         public static T CopyProperties<T>(this T ext, Dictionary<string, object> from, Action<T> specialMappings = null)
         {
