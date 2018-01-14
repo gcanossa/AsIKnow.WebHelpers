@@ -39,6 +39,13 @@ namespace AsIKnow.WebHelpers
             }
         }
 
+        public static Dictionary<string, object> ToPropDictionary(this object ext)
+        {
+            ext = ext ?? throw new ArgumentNullException(nameof(ext));
+
+            return ext.GetType().GetProperties().Where(p=>p.CanRead).ToDictionary(p => p.Name, p => p.GetValue(ext));
+        }
+
         public static Dictionary<string, object> ExludeProperties<T>(this T ext, Expression<Func<T,object>> selector)
         {
             if (ext == null)
@@ -119,6 +126,39 @@ namespace AsIKnow.WebHelpers
             }
 
             return result;
+        }
+
+        public static Dictionary<string, object> MergeWith<T>(this T ext, Func<T, object> selector)
+        {
+            if (ext == null)
+                throw new ArgumentNullException(nameof(ext));
+            if (selector == null)
+                throw new ArgumentNullException(nameof(selector));
+
+            return ext.MergeWith<T>(selector(ext));
+        }
+        public static Dictionary<string, object> MergeWith<T>(this T ext, object obj)
+        {
+            if(ext == null)
+                throw new ArgumentNullException(nameof(ext));
+            obj = obj ?? new { };
+
+            return ext.ToPropDictionary().MergeWith(obj.ToPropDictionary());
+        }
+        public static Dictionary<string, object> MergeWith(this Dictionary<string, object> ext, Dictionary<string, object> obj)
+        {
+            ext = ext ?? throw new ArgumentNullException(nameof(ext));
+            obj = obj ?? new Dictionary<string, object>();
+
+            foreach (KeyValuePair<string, object> kv in obj)
+            {
+                if (ext.ContainsKey(kv.Key))
+                    ext[kv.Key] = kv.Value;
+                else
+                    ext.Add(kv.Key, kv.Value);
+            }
+
+            return ext;
         }
 
         public static bool HasPropery(this object ext, string name, Type baseType = null, Type propertyBaseType = null)

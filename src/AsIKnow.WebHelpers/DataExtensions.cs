@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.IO;
 using System.IO.Compression;
+using Microsoft.AspNetCore.Http;
 
 namespace AsIKnow.WebHelpers
 {
@@ -63,6 +64,11 @@ namespace AsIKnow.WebHelpers
                 throw new ArgumentException("Not a valid base64 string.", nameof(ext));
 
             return Convert.FromBase64String(ext);
+        }
+        
+        public static PaginatedList<T> PaginatedResponse<T>(this HttpRequest request, IEnumerable<T> items, int defaultPerPage = 15, int defaultPage = 1, Func<T, object> transform = null)
+        {
+            return PaginatedList<T>.FormRequest(request, items, defaultPerPage, defaultPage, transform);
         }
     }
 }

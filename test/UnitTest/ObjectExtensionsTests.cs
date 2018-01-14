@@ -102,5 +102,16 @@ namespace UnitTest
             Assert.Equal(0, test1.Value);
             Assert.Equal("ciao", test1.ValueString);
         }
+
+        [Trait("Category", "ObjectExtensions")]
+        [Fact(DisplayName = "MergeWith")]
+        public void MergeWith()
+        {
+            Test2 test = new Test2() { Value = 3, ValueString = "prova" };
+
+            Dictionary<string, object> r1 = test.MergeWith(new { Value = 4, Prova = "lui" });
+
+            Assert.Equal(new Dictionary<string, object>() { { "Value", 4 }, { "ValueString", "prova" }, { "Prova", "lui" } }, r1);
+        }
     }
 }
