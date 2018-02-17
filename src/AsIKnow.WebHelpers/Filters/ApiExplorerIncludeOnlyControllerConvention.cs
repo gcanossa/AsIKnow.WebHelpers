@@ -17,6 +17,8 @@ namespace AsIKnow.WebHelpers.Filters
                 throw new ArgumentException($"Must contain at least one element.", nameof(acceptedTypes));
             if (acceptedTypes.Any(p => !typeof(Controller).IsAssignableFrom(p)))
                 throw new ArgumentException("Only Controller derived types are allowed.", nameof(acceptedTypes));
+
+            AcceptedTypes = acceptedTypes;
         }
         public void Apply(ActionModel action)
         {
