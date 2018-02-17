@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>0.1.12</Version>
+    <Version>0.1.13</Version>
     <Company>asiknow.it</Company>
     <Description>Web helpers library</Description>
     <PackageLicenseUrl>https://github.com/goldenass/AsIKnow.WebHelpers/blob/master/LICENSE</PackageLicenseUrl>
@@ -12,8 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
