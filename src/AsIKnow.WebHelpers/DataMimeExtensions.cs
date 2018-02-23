@@ -58,6 +58,7 @@ namespace AsIKnow.WebHelpers
             new MimeMarkers("image/tiff", "49 49 2A 00", null),
             new MimeMarkers("image/tiff", "4D 4D 00 2A", null),
             new MimeMarkers("image/tiff", "4D 4D 00 2B", null),
+            new MimeMarkers("image/svg+xml", "3C", "3E", (m, d) => Regex.IsMatch(Encoding.UTF8.GetString(d), "<svg.+</svg>")),
 
             new MimeMarkers("video/mp4", "66 74 79 70 4D 53 4E 56", null),
             new MimeMarkers("video/quicktime", "66 74 79 70 71 74 20 20", null),
