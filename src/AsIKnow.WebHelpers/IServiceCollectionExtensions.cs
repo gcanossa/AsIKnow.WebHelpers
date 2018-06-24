@@ -17,6 +17,13 @@ namespace AsIKnow.WebHelpers
             ext = ext ?? throw new ArgumentNullException(nameof(ext));
             options = options ?? new WebApplicationOptions();
 
+            ext.ConfigureApplicationCookie(opt => {
+                opt.Cookie.Name = options.ApplicationCookieName ?? (options.CookieBaseName != null ? $"{options.CookieBaseName}_app" : opt.Cookie.Name);
+            });
+            ext.ConfigureExternalCookie(opt => {
+                opt.Cookie.Name = options.ExternalCookieName ?? (options.CookieBaseName != null ? $"{options.CookieBaseName}_ext" : opt.Cookie.Name);
+            });
+
             IDataProtectionBuilder dpBuilder = ext.AddDataProtection()
                 .SetApplicationName(options.DataProtection.ApplicationName)
                 .PersistKeysToFileSystem(new DirectoryInfo(options.DataProtection.KeyRingPath));
