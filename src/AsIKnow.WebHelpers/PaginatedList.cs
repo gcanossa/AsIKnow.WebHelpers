@@ -34,6 +34,11 @@ namespace AsIKnow.WebHelpers
 
         public static PaginatedList<T> FormRequest(HttpRequest request, IEnumerable<T> items, int defaultPerPage = 15, int defaultPage = 1, Func<T, object> transform = null)
         {
+            return FormRequest(request, items?.AsQueryable(), defaultPerPage, defaultPage, transform);
+        }
+
+        public static PaginatedList<T> FormRequest(HttpRequest request, IQueryable<T> items, int defaultPerPage = 15, int defaultPage = 1, Func<T, object> transform = null)
+        {
             request = request ?? throw new ArgumentNullException(nameof(request));
             items = items ?? throw new ArgumentNullException(nameof(items));
 
@@ -47,6 +52,10 @@ namespace AsIKnow.WebHelpers
         }
 
         public PaginatedList(Uri baseUri, IEnumerable<T> items, int perPage, int page, Func<T, object> transform = null)
+            :this(baseUri, items?.AsQueryable(), perPage, page, transform)
+        {}
+
+        public PaginatedList(Uri baseUri, IQueryable<T> items, int perPage, int page, Func<T, object> transform = null)
         {
             UriBuilder b = new UriBuilder(baseUri);
             b.Query = string.Join("&", b.Query.Split('&').Where(p => !p.Contains("page=")));
