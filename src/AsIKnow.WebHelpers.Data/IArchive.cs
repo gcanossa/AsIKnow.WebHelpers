@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AsIKnow.WebHelpers
+namespace AsIKnow.WebHelpers.Data
 {
     public interface IArchive : IDisposable
     {

@@ -1,4 +1,5 @@
 using AsIKnow.WebHelpers;
+using AsIKnow.WebHelpers.Data;
 using System;
 using System.Linq;
 using Xunit;
@@ -45,7 +46,7 @@ namespace UnitTest
             byte[] test = Enumerable.Range(0, 1000).Select(p => (byte)p).ToArray();
             byte[] zip_data;
 
-            using (IArchive zip = new AsIKnow.WebHelpers.ZipArchive())
+            using (IArchive zip = new AsIKnow.WebHelpers.Data.ZipArchive())
             {
                 zip.AddOrUpdateItem("/prova/value", test);
 
@@ -53,7 +54,7 @@ namespace UnitTest
                 zip_data = zip.ToArray();
             }
             
-            using (IArchive zip = new AsIKnow.WebHelpers.ZipArchive(zip_data))
+            using (IArchive zip = new AsIKnow.WebHelpers.Data.ZipArchive(zip_data))
             {
                 Assert.True(zip.ItemExists("/prova/value"));
                 Assert.True(zip.GetItem("/prova/value").Length == test.Length);
@@ -63,7 +64,7 @@ namespace UnitTest
                 zip_data = zip.ToArray();
             }
 
-            using (IArchive zip = new AsIKnow.WebHelpers.ZipArchive(zip_data))
+            using (IArchive zip = new AsIKnow.WebHelpers.Data.ZipArchive(zip_data))
             {
                 Assert.True(zip.ListItems().Count() == 2);
                 zip.RemoveItem("/prova/value");
@@ -72,7 +73,7 @@ namespace UnitTest
                 zip_data = zip.ToArray();
             }
 
-            using (IArchive zip = new AsIKnow.WebHelpers.ZipArchive(zip_data))
+            using (IArchive zip = new AsIKnow.WebHelpers.Data.ZipArchive(zip_data))
             {
                 Assert.True(zip.ListItems().Count() == 1);
                 Assert.True(zip.ListItems().First() == "/prova/value2");

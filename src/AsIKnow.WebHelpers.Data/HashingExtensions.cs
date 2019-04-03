@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AsIKnow.WebHelpers
+namespace AsIKnow.WebHelpers.Data
 {
     public static class HashingExtensions
     {

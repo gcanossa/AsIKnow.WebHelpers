@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq;
 using System.IO.Compression;
 
-namespace AsIKnow.WebHelpers
+namespace AsIKnow.WebHelpers.Data
 {
     public class ZipArchive : IArchive
     {

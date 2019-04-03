@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AsIKnow.WebHelpers
 {
-    public class PaginatedList<T>
+    public class PaginatedList<Q, T>
     {
         #region nested types
         
@@ -32,17 +32,17 @@ namespace AsIKnow.WebHelpers
 
         #endregion
 
-        public static PaginatedList<T> FormRequest(HttpRequest request, IEnumerable<T> items, int defaultPerPage = 15, int defaultPage = 1, Func<T, object> transform = null)
+        public static PaginatedList<Q,T> FormRequest(HttpRequest request, IEnumerable<Q> items, int defaultPerPage = 15, int defaultPage = 1, Func<Q, T> transform = null)
         {
             return FormRequest(request, items?.AsQueryable(), defaultPerPage, defaultPage, transform);
         }
 
-        public static PaginatedList<T> FormRequest(HttpRequest request, IQueryable<T> items, int defaultPerPage = 15, int defaultPage = 1, Func<T, object> transform = null)
+        public static PaginatedList<Q,T> FormRequest(HttpRequest request, IQueryable<Q> items, int defaultPerPage = 15, int defaultPage = 1, Func<Q, T> transform = null)
         {
             request = request ?? throw new ArgumentNullException(nameof(request));
             items = items ?? throw new ArgumentNullException(nameof(items));
 
-            return new PaginatedList<T>(
+            return new PaginatedList<Q,T>(
                 new Uri(request.GetEncodedUrl()),
                 items,
                 !request.Query.ContainsKey("limit") ? defaultPerPage : Convert.ToInt32(request.Query["limit"].FirstOrDefault() ?? defaultPerPage.ToString()),
@@ -51,11 +51,11 @@ namespace AsIKnow.WebHelpers
             );
         }
 
-        public PaginatedList(Uri baseUri, IEnumerable<T> items, int perPage, int page, Func<T, object> transform = null)
+        public PaginatedList(Uri baseUri, IEnumerable<Q> items, int perPage, int page, Func<Q, T> transform)
             :this(baseUri, items?.AsQueryable(), perPage, page, transform)
         {}
 
-        public PaginatedList(Uri baseUri, IQueryable<T> items, int perPage, int page, Func<T, object> transform = null)
+        public PaginatedList(Uri baseUri, IQueryable<Q> items, int perPage, int page, Func<Q, T> transform)
         {
             UriBuilder b = new UriBuilder(baseUri);
             b.Query = string.Join("&", b.Query.Split('&').Where(p => !p.Contains("page=")));
@@ -73,19 +73,18 @@ namespace AsIKnow.WebHelpers
                 Path = baseUri.ToString()
             };
 
-            Links = new LinksObj();
-            Links.First = new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", "1"));
-            Links.Last = new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", $"{numberOfPages}"));
-            Links.Prev = page == 1 ? null : new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", $"{page - 1}"));
-            Links.Next = page == numberOfPages ? null : new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", $"{page + 1}"));
+            Links = new LinksObj
+            {
+                First = new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", "1")),
+                Last = new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", $"{numberOfPages}")),
+                Prev = page == 1 ? null : new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", $"{page - 1}")),
+                Next = page == numberOfPages ? null : new Uri(QueryHelpers.AddQueryString(baseUri.ToString(), "page", $"{page + 1}"))
+            };
 
-            if (transform == null)
-                Data = items.Skip((page - 1) * perPage).Take(perPage).Select(p => (object)p).ToList();
-            else
-                Data = items.Skip((page - 1) * perPage).Take(perPage).Select(transform).ToList();
+            Data = items.Skip((page - 1) * perPage).Take(perPage).Select(transform).ToList();
         }
         
-        public List<object> Data { get; protected set; }
+        public List<T> Data { get; protected set; }
         public LinksObj Links { get; protected set; }
         public MetaObj Meta { get; protected set; }
     }
