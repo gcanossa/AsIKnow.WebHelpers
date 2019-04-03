@@ -8,10 +8,10 @@ using System.Text;
 
 namespace AsIKnow.WebHelpers
 {
-    public class PaginatedList<Q, T>
+    public abstract class PaginatedList<T>
     {
         #region nested types
-        
+
         public class LinksObj
         {
             public Uri First { get; set; }
@@ -32,17 +32,24 @@ namespace AsIKnow.WebHelpers
 
         #endregion
 
-        public static PaginatedList<Q,T> FormRequest(HttpRequest request, IEnumerable<Q> items, int defaultPerPage = 15, int defaultPage = 1, Func<Q, T> transform = null)
+        public List<T> Data { get; protected set; }
+        public LinksObj Links { get; protected set; }
+        public MetaObj Meta { get; protected set; }
+    }
+
+    public class PaginatedListBuilder<Q, T> : PaginatedList<T>
+    {
+        public static PaginatedListBuilder<Q,T> FormRequest(HttpRequest request, IEnumerable<Q> items, int defaultPerPage = 15, int defaultPage = 1, Func<Q, T> transform = null)
         {
             return FormRequest(request, items?.AsQueryable(), defaultPerPage, defaultPage, transform);
         }
 
-        public static PaginatedList<Q,T> FormRequest(HttpRequest request, IQueryable<Q> items, int defaultPerPage = 15, int defaultPage = 1, Func<Q, T> transform = null)
+        public static PaginatedListBuilder<Q,T> FormRequest(HttpRequest request, IQueryable<Q> items, int defaultPerPage = 15, int defaultPage = 1, Func<Q, T> transform = null)
         {
             request = request ?? throw new ArgumentNullException(nameof(request));
             items = items ?? throw new ArgumentNullException(nameof(items));
 
-            return new PaginatedList<Q,T>(
+            return new PaginatedListBuilder<Q,T>(
                 new Uri(request.GetEncodedUrl()),
                 items,
                 !request.Query.ContainsKey("limit") ? defaultPerPage : Convert.ToInt32(request.Query["limit"].FirstOrDefault() ?? defaultPerPage.ToString()),
@@ -51,11 +58,11 @@ namespace AsIKnow.WebHelpers
             );
         }
 
-        public PaginatedList(Uri baseUri, IEnumerable<Q> items, int perPage, int page, Func<Q, T> transform)
+        public PaginatedListBuilder(Uri baseUri, IEnumerable<Q> items, int perPage, int page, Func<Q, T> transform)
             :this(baseUri, items?.AsQueryable(), perPage, page, transform)
         {}
 
-        public PaginatedList(Uri baseUri, IQueryable<Q> items, int perPage, int page, Func<Q, T> transform)
+        public PaginatedListBuilder(Uri baseUri, IQueryable<Q> items, int perPage, int page, Func<Q, T> transform)
         {
             UriBuilder b = new UriBuilder(baseUri);
             b.Query = string.Join("&", b.Query.Split('&').Where(p => !p.Contains("page=")));

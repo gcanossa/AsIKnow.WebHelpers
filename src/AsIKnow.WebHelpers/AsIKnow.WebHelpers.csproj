@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <Version>0.1.19</Version>
+    <Version>0.1.20</Version>
     <Company>asiknow.it</Company>
     <Description>Web helpers library</Description>
     <PackageLicenseUrl>https://github.com/goldenass/AsIKnow.WebHelpers/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/goldenass/AsIKnow.WebHelpers</PackageProjectUrl>
     <PackageTags>web data manipulation helpers</PackageTags>
-    <AssemblyVersion>0.1.19.0</AssemblyVersion>
+    <AssemblyVersion>0.1.20.0</AssemblyVersion>
     <PackageId>AsIKnow.WebHelpers</PackageId>
   </PropertyGroup>
 
